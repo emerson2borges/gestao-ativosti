@@ -1,0 +1,56 @@
+# ============================================
+# VARIÁVEIS DE AMBIENTE (NUNCA VERSIONAR!)
+# ============================================
+.env
+.env.*
+!.env.example
+
+# ============================================
+# DOCKER
+# ============================================
+*.pid
+*.log
+.docker/
+docker-compose.override.yml
+
+# ============================================
+# BACKEND (Java / Maven)
+# ============================================
+backend/target/
+backend/.mvn/
+backend/mvnw*
+backend/*.log
+*.jar
+*.war
+*.ear
+
+# ============================================
+# FRONTEND (Node / Angular)
+# ============================================
+frontend/node_modules/
+frontend/.angular/
+frontend/dist/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/.npm/
+frontend/.eslintcache
+frontend/package-lock.json   # (opcional, mas recomendado ignorar se usar npm ci)
+frontend/yarn.lock
+
+# ============================================
+# IDES (VS Code / IntelliJ)
+# ============================================
+.vscode/
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# ============================================
+# SISTEMA OPERACIONAL
+# ============================================
+.DS_Store
+Thumbs.db
+desktop.ini
