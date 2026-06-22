@@ -35,8 +35,9 @@ Projeto para gestão de ativos de TI com **Angular** (frontend) e **Spring Boot*
 - [Backend] (health): http://localhost:8080/actuator/health
 - [PgAdmin] http://localhost:8081 (login conforme .env)
 
-# Estrutura
+# Estrutura do Projeto
 
+```plaintext
 .
 ├── backend/
 │   ├── Dockerfile
@@ -67,6 +68,7 @@ Projeto para gestão de ativos de TI com **Angular** (frontend) e **Spring Boot*
 ├── .env.example
 ├── .gitignore
 └── README.md
+```
 
 # Licença
 Este projeto está sob a licença MIT.
