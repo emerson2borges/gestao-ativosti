@@ -45,11 +45,15 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
-
         <!-- Dependencias de validacao -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <!-- Dependencias de flyway -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
         </dependency>
     </dependencies>
     <build>
