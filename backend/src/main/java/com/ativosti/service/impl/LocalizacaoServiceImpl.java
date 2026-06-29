@@ -7,6 +7,7 @@ import com.ativosti.model.Localizacao;
 import com.ativosti.repository.CidadeRepository;
 import com.ativosti.repository.LocalizacaoRepository;
 import com.ativosti.service.LocalizacaoService;
+import com.ativosti.util.MessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,12 +35,15 @@ public class LocalizacaoServiceImpl implements LocalizacaoService {
     @Override
     public LocalizacaoResponseDTO buscarPorId(Long id) {
         Localizacao localizacao = localizacaoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Localização não encontrada"));
+                .orElseThrow(() -> MessageUtils.notFound("Localização", id));
         return toResponseDTO(localizacao);
     }
 
     @Override
     public List<LocalizacaoResponseDTO> buscarPorCidade(Long cidadeId) {
+        if (!cidadeRepository.existsById(cidadeId)) {
+            throw MessageUtils.notFound("Cidade", cidadeId);
+        }
         return localizacaoRepository.findByCidadeId(cidadeId)
                 .stream()
                 .map(this::toResponseDTO)
@@ -50,7 +54,13 @@ public class LocalizacaoServiceImpl implements LocalizacaoService {
     @Transactional
     public LocalizacaoResponseDTO criar(LocalizacaoRequestDTO dto) {
         Cidade cidade = cidadeRepository.findById(dto.getCidadeId())
-                .orElseThrow(() -> new RuntimeException("Cidade não encontrada com id: " + dto.getCidadeId()));
+                .orElseThrow(() -> MessageUtils.notFound("Cidade", dto.getCidadeId()));
+
+        if (localizacaoRepository.findByCidadeIdAndTipoPontoAndNomePonto(
+                dto.getCidadeId(), dto.getTipoPonto(), dto.getNomePonto()).isPresent()) {
+            throw MessageUtils.alreadyExists("localização", "cidade e ponto",
+                    dto.getTipoPonto() + " - " + dto.getNomePonto());
+        }
 
         Localizacao localizacao = new Localizacao();
         localizacao.setCidade(cidade);
@@ -65,10 +75,21 @@ public class LocalizacaoServiceImpl implements LocalizacaoService {
     @Transactional
     public LocalizacaoResponseDTO atualizar(Long id, LocalizacaoRequestDTO dto) {
         Localizacao localizacao = localizacaoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Localização não encontrada"));
+                .orElseThrow(() -> MessageUtils.notFound("Localização", id));
 
         Cidade cidade = cidadeRepository.findById(dto.getCidadeId())
-                .orElseThrow(() -> new RuntimeException("Cidade não encontrada"));
+                .orElseThrow(() -> MessageUtils.notFound("Cidade", dto.getCidadeId()));
+
+        if (!localizacao.getCidade().getId().equals(dto.getCidadeId()) ||
+                !localizacao.getTipoPonto().equals(dto.getTipoPonto()) ||
+                !localizacao.getNomePonto().equals(dto.getNomePonto())) {
+
+            if (localizacaoRepository.findByCidadeIdAndTipoPontoAndNomePonto(
+                    dto.getCidadeId(), dto.getTipoPonto(), dto.getNomePonto()).isPresent()) {
+                throw MessageUtils.alreadyExists("localização", "cidade e ponto",
+                        dto.getTipoPonto() + " - " + dto.getNomePonto());
+            }
+        }
 
         localizacao.setCidade(cidade);
         localizacao.setTipoPonto(dto.getTipoPonto());
@@ -82,7 +103,7 @@ public class LocalizacaoServiceImpl implements LocalizacaoService {
     @Transactional
     public void deletar(Long id) {
         if (!localizacaoRepository.existsById(id)) {
-            throw new RuntimeException("Localização não encontrada");
+            throw MessageUtils.notFound("Localização", id);
         }
         localizacaoRepository.deleteById(id);
     }
