@@ -13,6 +13,7 @@ public class MessageUtils {
     public static final String MSG_NAO_ENCONTRADO = "{0} não encontrado com id: {1}";
     public static final String MSG_JA_EXISTE = "Já existe um(a) {0} com {1}: {2}";
     public static final String MSG_STATUS_INVALIDO = "Status inválido. Valores permitidos: {0}";
+    public static final String MSG_ESTOQUE_INVALIDO = "Estoque inválido: {0} {1}";
 
     // Método para formatar e lançar exceções de recurso:
     // a. não encontrado
@@ -31,6 +32,16 @@ public class MessageUtils {
 
     public static ValidationException invalidStatus(String status, List<String> validos) {
         String msg = format(MSG_STATUS_INVALIDO, validos);
+        return new ValidationException(msg);
+    }
+
+    public static ValidationException invalidStock(String campo, String motivo) {
+        String msg = "Estoque inválido: " + campo + " " + motivo;
+        return new ValidationException(msg);
+    }
+
+    public static ValidationException invalidStock(String campo, String motivo) {
+        String msg = format(MSG_ESTOQUE_INVALIDO, campo, motivo);
         return new ValidationException(msg);
     }
 
