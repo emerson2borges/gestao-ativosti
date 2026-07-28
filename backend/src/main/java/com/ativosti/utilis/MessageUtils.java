@@ -36,11 +36,6 @@ public class MessageUtils {
     }
 
     public static ValidationException invalidStock(String campo, String motivo) {
-        String msg = "Estoque inválido: " + campo + " " + motivo;
-        return new ValidationException(msg);
-    }
-
-    public static ValidationException invalidStock(String campo, String motivo) {
         String msg = format(MSG_ESTOQUE_INVALIDO, campo, motivo);
         return new ValidationException(msg);
     }
