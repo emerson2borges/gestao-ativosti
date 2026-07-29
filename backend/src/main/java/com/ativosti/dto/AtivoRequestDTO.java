@@ -28,6 +28,9 @@ public class AtivoRequestDTO {
     @Size(max = 30, message = "Status deve ter no máximo 30 caracteres")
     private String status;
 
+    @Size(max = 20, message = "Chamado GLPI deve ter no máximo 20 caracteres")
+    private String chamadoGlpi;
+
     // Getters e Setters
     public Long getTipoId() { return tipoId; }
     public void setTipoId(Long tipoId) { this.tipoId = tipoId; }
@@ -49,4 +52,7 @@ public class AtivoRequestDTO {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getChamadoGlpi() { return chamadoGlpi; }
+    public void setChamadoGlpi(String chamadoGlpi) { this.chamadoGlpi = chamadoGlpi; }
 }
