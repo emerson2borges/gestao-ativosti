@@ -5,6 +5,7 @@ import com.ativosti.dto.TipoAtivoResponseDTO;
 import com.ativosti.model.TipoAtivo;
 import com.ativosti.repository.TipoAtivoRepository;
 import com.ativosti.service.TipoAtivoService;
+import com.ativosti.util.MessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,7 @@ public class TipoAtivoServiceImpl implements TipoAtivoService {
     @Override
     public TipoAtivoResponseDTO buscarPorId(Long id) {
         TipoAtivo tipo = tipoAtivoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tipo de ativo não encontrado com id: " + id));
+                .orElseThrow(() -> MessageUtils.notFound("Tipo de ativo", id));
         return toResponseDTO(tipo);
     }
 
@@ -37,10 +38,12 @@ public class TipoAtivoServiceImpl implements TipoAtivoService {
     @Transactional
     public TipoAtivoResponseDTO criar(TipoAtivoRequestDTO dto) {
         if (tipoAtivoRepository.findByNome(dto.getNome()).isPresent()) {
-            throw new RuntimeException("Já existe um tipo de ativo com o nome: " + dto.getNome());
+            throw MessageUtils.alreadyExists("tipo de ativo", "nome", dto.getNome());
         }
+
         TipoAtivo tipo = new TipoAtivo();
         tipo.setNome(dto.getNome());
+
         TipoAtivo salvo = tipoAtivoRepository.save(tipo);
         return toResponseDTO(salvo);
     }
@@ -49,7 +52,13 @@ public class TipoAtivoServiceImpl implements TipoAtivoService {
     @Transactional
     public TipoAtivoResponseDTO atualizar(Long id, TipoAtivoRequestDTO dto) {
         TipoAtivo tipo = tipoAtivoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Tipo de ativo não encontrado com id: " + id));
+                .orElseThrow(() -> MessageUtils.notFound("Tipo de ativo", id));
+
+        if (!tipo.getNome().equals(dto.getNome()) &&
+                tipoAtivoRepository.findByNome(dto.getNome()).isPresent()) {
+            throw MessageUtils.alreadyExists("tipo de ativo", "nome", dto.getNome());
+        }
+
         tipo.setNome(dto.getNome());
         TipoAtivo atualizado = tipoAtivoRepository.save(tipo);
         return toResponseDTO(atualizado);
@@ -59,7 +68,7 @@ public class TipoAtivoServiceImpl implements TipoAtivoService {
     @Transactional
     public void deletar(Long id) {
         if (!tipoAtivoRepository.existsById(id)) {
-            throw new RuntimeException("Tipo de ativo não encontrado com id: " + id);
+            throw MessageUtils.notFound("Tipo de ativo", id);
         }
         tipoAtivoRepository.deleteById(id);
     }

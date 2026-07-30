@@ -5,6 +5,7 @@ import com.ativosti.dto.OrdemCompraResponseDTO;
 import com.ativosti.model.OrdemCompra;
 import com.ativosti.repository.OrdemCompraRepository;
 import com.ativosti.service.OrdemCompraService;
+import com.ativosti.util.MessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +30,7 @@ public class OrdemCompraServiceImpl implements OrdemCompraService {
     @Override
     public OrdemCompraResponseDTO buscarPorId(Long id) {
         OrdemCompra oc = ordemCompraRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ordem de compra não encontrada com id: " + id));
+                .orElseThrow(() -> MessageUtils.notFound("Ordem de compra", id));
         return toResponseDTO(oc);
     }
 
@@ -37,8 +38,9 @@ public class OrdemCompraServiceImpl implements OrdemCompraService {
     @Transactional
     public OrdemCompraResponseDTO criar(OrdemCompraRequestDTO dto) {
         if (ordemCompraRepository.findByNumeroOc(dto.getNumeroOc()).isPresent()) {
-            throw new RuntimeException("Já existe uma ordem de compra com o número: " + dto.getNumeroOc());
+            throw MessageUtils.alreadyExists("ordem de compra", "número OC", dto.getNumeroOc());
         }
+
         OrdemCompra oc = new OrdemCompra();
         oc.setNumeroOc(dto.getNumeroOc());
         oc.setDataCompra(dto.getDataCompra());
@@ -53,11 +55,11 @@ public class OrdemCompraServiceImpl implements OrdemCompraService {
     @Transactional
     public OrdemCompraResponseDTO atualizar(Long id, OrdemCompraRequestDTO dto) {
         OrdemCompra oc = ordemCompraRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Ordem de compra não encontrada com id: " + id));
+                .orElseThrow(() -> MessageUtils.notFound("Ordem de compra", id));
 
         if (!oc.getNumeroOc().equals(dto.getNumeroOc()) &&
                 ordemCompraRepository.findByNumeroOc(dto.getNumeroOc()).isPresent()) {
-            throw new RuntimeException("Já existe uma ordem de compra com o número: " + dto.getNumeroOc());
+            throw MessageUtils.alreadyExists("ordem de compra", "número OC", dto.getNumeroOc());
         }
 
         oc.setNumeroOc(dto.getNumeroOc());
@@ -73,7 +75,7 @@ public class OrdemCompraServiceImpl implements OrdemCompraService {
     @Transactional
     public void deletar(Long id) {
         if (!ordemCompraRepository.existsById(id)) {
-            throw new RuntimeException("Ordem de compra não encontrada com id: " + id);
+            throw MessageUtils.notFound("Ordem de compra", id);
         }
         ordemCompraRepository.deleteById(id);
     }
