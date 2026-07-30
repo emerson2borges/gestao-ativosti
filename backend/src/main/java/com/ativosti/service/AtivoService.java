@@ -11,6 +11,8 @@ public interface AtivoService {
     AtivoResponseDTO criar(AtivoRequestDTO dto);
     AtivoResponseDTO atualizar(Long id, AtivoRequestDTO dto);
     void deletar(Long id);
+    void descartarAtivo(Long ativoId, String chamadoGlpi);
+    void desativarAtivo(Long ativoId, String chamadoGlpi);
 
     InstalacaoSubativoResponseDTO instalarSubativo(Long ativoId, Long subativoId, String chamadoGlpi);
 

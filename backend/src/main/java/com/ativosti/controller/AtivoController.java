@@ -61,4 +61,20 @@ public class AtivoController {
             @RequestParam(required = false) String chamadoGlpi) {
         return ativoService.removerSubativo(ativoId, subativoId, chamadoGlpi);
     }
+
+    @PostMapping("/{id}/descartar")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void descartarAtivo(
+            @PathVariable Long id,
+            @RequestParam(required = false) String chamadoGlpi) {
+        ativoService.descartarAtivo(id, chamadoGlpi);
+    }
+
+    @PostMapping("/{id}/desativar")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void desativarAtivo(
+            @PathVariable Long id,
+            @RequestParam(required = false) String chamadoGlpi) {
+        ativoService.desativarAtivo(id, chamadoGlpi);
+    }
 }

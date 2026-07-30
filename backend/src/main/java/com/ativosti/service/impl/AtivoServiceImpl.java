@@ -348,4 +348,89 @@ public class AtivoServiceImpl implements AtivoService {
 
         return response;
     }
+
+    @Override
+    @Transactional
+    public void descartarAtivo(Long ativoId, String chamadoGlpi) {
+        Ativo ativo = ativoRepository.findById(ativoId)
+                .orElseThrow(() -> MessageUtils.notFound("Ativo", ativoId));
+
+        // Verifica se o ativo já está descartado
+        if ("Descartado".equals(ativo.getStatus())) {
+            throw new BusinessException("Ativo já está descartado.");
+        }
+
+        List<SubativoInterno> subativos = subativoInternoRepository.findByAtivoId(ativoId);
+
+        if (subativos.isEmpty()) {
+            throw new BusinessException("Ativo não possui subativos para descartar.");
+        }
+
+        for (SubativoInterno subativo : subativos) {
+            // Não devolve ao estoque
+            // Não registra entrada no histórico de insumos
+            // Apenas desassocia o subativo
+            subativo.setAtivo(null);
+            subativoInternoRepository.save(subativo);
+        }
+
+        // Atualiza status
+        ativo.setStatus("Descartado");
+        ativoRepository.save(ativo);
+
+        registrarHistorico(ativo, "descarte",
+                null,
+                "Ativo descartado. " + subativos.size() + " subativo(s) removido(s) e descartado(s).",
+                chamadoGlpi);
+    }
+
+    @Override
+    @Transactional
+    public void desativarAtivo(Long ativoId, String chamadoGlpi) {
+        Ativo ativo = ativoRepository.findById(ativoId)
+                .orElseThrow(() -> MessageUtils.notFound("Ativo", ativoId));
+
+        // Verifica se o ativo já está inativo
+        if ("Inativo".equals(ativo.getStatus())) {
+            throw new BusinessException("Ativo já está inativo.");
+        }
+
+        List<SubativoInterno> subativos = subativoInternoRepository.findByAtivoId(ativoId);
+
+        if (subativos.isEmpty()) {
+            throw new BusinessException("Ativo não possui subativos para desativar.");
+        }
+
+        for (SubativoInterno subativo : subativos) {
+            // Busca o insumo correspondente
+            EstoqueInsumo insumo = estoqueInsumoRepository.findByNomeItem(subativo.getTipoComponente())
+                    .orElseThrow(() -> new BusinessException("Insumo não encontrado para o tipo: " + subativo.getTipoComponente()));
+
+            // Devolve ao estoque
+            insumo.setQuantidadeDisponivel(insumo.getQuantidadeDisponivel() + subativo.getQuantidade());
+            estoqueInsumoRepository.save(insumo);
+
+            // Registra entrada no histórico de insumos
+            HistoricoInsumo historico = new HistoricoInsumo();
+            historico.setInsumo(insumo);
+            historico.setTipoMovimentacao("ENTRADA");
+            historico.setQuantidade(subativo.getQuantidade());
+            historico.setChamadoGlpi(chamadoGlpi);
+            historico.setUsuarioId(1L);
+            historicoInsumoRepository.save(historico);
+
+            // Desassocia o subativo
+            subativo.setAtivo(null);
+            subativoInternoRepository.save(subativo);
+        }
+
+        // Atualiza status
+        ativo.setStatus("Inativo");
+        ativoRepository.save(ativo);
+
+        registrarHistorico(ativo, "desativacao",
+                null,
+                "Ativo desativado. " + subativos.size() + " subativo(s) removido(s) e devolvido(s) ao estoque.",
+                chamadoGlpi);
+    }
 }
