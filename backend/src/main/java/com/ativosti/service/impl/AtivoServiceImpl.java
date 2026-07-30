@@ -2,11 +2,19 @@ package com.ativosti.service.impl;
 
 import com.ativosti.dto.AtivoRequestDTO;
 import com.ativosti.dto.AtivoResponseDTO;
+import com.ativosti.dto.InstalacaoSubativoResponseDTO;
+import com.ativosti.exception.BusinessException;
 import com.ativosti.model.Ativo;
 import com.ativosti.model.Localizacao;
 import com.ativosti.model.OrdemCompra;
 import com.ativosti.model.TipoAtivo;
 import com.ativosti.model.HistoricoAtivo;
+import com.ativosti.model.EstoqueInsumo;
+import com.ativosti.model.HistoricoInsumo;
+import com.ativosti.model.SubativoInterno;
+import com.ativosti.repository.EstoqueInsumoRepository;
+import com.ativosti.repository.HistoricoInsumoRepository;
+import com.ativosti.repository.SubativoInternoRepository;
 import com.ativosti.repository.AtivoRepository;
 import com.ativosti.repository.LocalizacaoRepository;
 import com.ativosti.repository.OrdemCompraRepository;
@@ -41,6 +49,15 @@ public class AtivoServiceImpl implements AtivoService {
 
     @Autowired
     private HistoricoAtivoRepository historicoAtivoRepository;
+
+    @Autowired
+    private EstoqueInsumoRepository estoqueInsumoRepository;
+
+    @Autowired
+    private HistoricoInsumoRepository historicoInsumoRepository;
+
+    @Autowired
+    private SubativoInternoRepository subativoInternoRepository;
 
     @Override
     public List<AtivoResponseDTO> listarTodos() {
@@ -209,5 +226,126 @@ public class AtivoServiceImpl implements AtivoService {
         }
 
         return dto;
+    }
+
+    @Override
+    @Transactional
+    public InstalacaoSubativoResponseDTO instalarSubativo(Long ativoId, Long subativoId, String chamadoGlpi) {
+        // 1. Busca o ativo
+        Ativo ativo = ativoRepository.findById(ativoId)
+                .orElseThrow(() -> MessageUtils.notFound("Ativo", ativoId));
+
+        // 2. Busca o subativo
+        SubativoInterno subativo = subativoInternoRepository.findById(subativoId)
+                .orElseThrow(() -> MessageUtils.notFound("Subativo interno", subativoId));
+
+        // 3. Verifica se o subativo já está associado a outro ativo
+        if (subativo.getAtivo() != null && !subativo.getAtivo().getId().equals(ativoId)) {
+            throw new BusinessException("Subativo já está instalado em outro ativo: " + subativo.getAtivo().getPatrimonio());
+        }
+
+        // 4. Busca o insumo correspondente no estoque (pelo nome do componente)
+        EstoqueInsumo insumo = estoqueInsumoRepository.findByNomeItem(subativo.getTipoComponente())
+                .orElseThrow(() -> new BusinessException("Insumo não encontrado para o tipo: " + subativo.getTipoComponente()));
+
+        // 5. Verifica se há estoque disponível
+        if (insumo.getQuantidadeDisponivel() < subativo.getQuantidade()) {
+            throw MessageUtils.invalidStock("quantidade disponível",
+                    "insuficiente para a instalação. Disponível: " + insumo.getQuantidadeDisponivel() +
+                    ", Necessário: " + subativo.getQuantidade());
+        }
+
+        // 6. Consome do estoque
+        insumo.setQuantidadeDisponivel(insumo.getQuantidadeDisponivel() - subativo.getQuantidade());
+        estoqueInsumoRepository.save(insumo);
+
+        // 7. Registra a saída no histórico de insumos
+        HistoricoInsumo historico = new HistoricoInsumo();
+        historico.setInsumo(insumo);
+        historico.setTipoMovimentacao("SAIDA");
+        historico.setQuantidade(subativo.getQuantidade());
+        historico.setChamadoGlpi(chamadoGlpi);
+        historico.setUsuarioId(1L); // temporário
+        historicoInsumoRepository.save(historico);
+
+        // 8. Associa o subativo ao ativo
+        subativo.setAtivo(ativo);
+        subativoInternoRepository.save(subativo);
+
+        // 9. Registra a alteração no histórico do ativo
+        registrarHistorico(ativo, "subativo_instalado",
+                null,
+                "Instalado subativo: " + subativo.getTipoComponente() + " (" + subativo.getEspecificacao() + ")",
+                chamadoGlpi);
+
+        // 10. Retorna a resposta
+        InstalacaoSubativoResponseDTO response = new InstalacaoSubativoResponseDTO();
+        response.setAtivoId(ativo.getId());
+        response.setAtivoPatrimonio(ativo.getPatrimonio());
+        response.setSubativoId(subativo.getId());
+        response.setSubativoTipo(subativo.getTipoComponente());
+        response.setSubativoEspecificacao(subativo.getEspecificacao());
+        response.setQuantidadeConsumida(subativo.getQuantidade());
+        response.setEstoqueRestante(insumo.getQuantidadeDisponivel());
+        response.setChamadoGlpi(chamadoGlpi);
+
+        return response;
+    }
+
+    @Override
+    @Transactional
+    public InstalacaoSubativoResponseDTO removerSubativo(Long ativoId, Long subativoId, String chamadoGlpi) {
+        // 1. Busca o ativo
+        Ativo ativo = ativoRepository.findById(ativoId)
+                .orElseThrow(() -> MessageUtils.notFound("Ativo", ativoId));
+
+        // 2. Busca o subativo
+        SubativoInterno subativo = subativoInternoRepository.findById(subativoId)
+                .orElseThrow(() -> MessageUtils.notFound("Subativo interno", subativoId));
+
+        // 3. Verifica se o subativo está associado a este ativo
+        if (subativo.getAtivo() == null || !subativo.getAtivo().getId().equals(ativoId)) {
+            throw new BusinessException("Subativo não está instalado neste ativo.");
+        }
+
+        // 4. Busca o insumo correspondente no estoque
+        EstoqueInsumo insumo = estoqueInsumoRepository.findByNomeItem(subativo.getTipoComponente())
+                .orElseThrow(() -> new BusinessException("Insumo não encontrado para o tipo: " + subativo.getTipoComponente()));
+
+        // 5. Devolve ao estoque
+        insumo.setQuantidadeDisponivel(insumo.getQuantidadeDisponivel() + subativo.getQuantidade());
+        estoqueInsumoRepository.save(insumo);
+
+        // 6. Registra entrada no histórico de insumos
+        HistoricoInsumo historico = new HistoricoInsumo();
+        historico.setInsumo(insumo);
+        historico.setTipoMovimentacao("ENTRADA");
+        historico.setQuantidade(subativo.getQuantidade());
+        historico.setChamadoGlpi(chamadoGlpi);
+        historico.setUsuarioId(1L);
+        historicoInsumoRepository.save(historico);
+
+        // 7. Desassocia o subativo do ativo
+        subativo.setAtivo(null);
+        subativoInternoRepository.save(subativo);
+
+        // 8. Registra a alteração no histórico do ativo (com 5 argumentos)
+        registrarHistorico(ativo, "subativo_removido",
+                "Instalado: " + subativo.getTipoComponente() + " (" + subativo.getEspecificacao() + ")",
+                "Removido do ativo",
+                chamadoGlpi);
+
+        // 9. Resposta
+        InstalacaoSubativoResponseDTO response = new InstalacaoSubativoResponseDTO();
+        response.setAtivoId(ativo.getId());
+        response.setAtivoPatrimonio(ativo.getPatrimonio());
+        response.setSubativoId(subativo.getId());
+        response.setSubativoTipo(subativo.getTipoComponente());
+        response.setSubativoEspecificacao(subativo.getEspecificacao());
+        response.setQuantidadeConsumida(-subativo.getQuantidade());
+        response.setEstoqueRestante(insumo.getQuantidadeDisponivel());
+        response.setChamadoGlpi(chamadoGlpi);
+
+        return response;
     }
 }

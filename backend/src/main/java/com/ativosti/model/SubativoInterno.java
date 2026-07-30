@@ -11,7 +11,7 @@ public class SubativoInterno {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "ativo_id", nullable = false)
+    @JoinColumn(name = "ativo_id")
     private Ativo ativo;
 
     @Column(name = "tipo_componente", nullable = false, length = 50)

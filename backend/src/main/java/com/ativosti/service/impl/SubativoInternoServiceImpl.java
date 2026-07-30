@@ -97,14 +97,17 @@ public class SubativoInternoServiceImpl implements SubativoInternoService {
     }
 
     private SubativoInternoResponseDTO toResponseDTO(SubativoInterno subativo) {
+        Long ativoId = subativo.getAtivo() != null ? subativo.getAtivo().getId() : null;
+        String ativoPatrimonio = subativo.getAtivo() != null ? subativo.getAtivo().getPatrimonio() : null;
+
         return new SubativoInternoResponseDTO(
-                subativo.getId(),
-                subativo.getAtivo().getId(),
-                subativo.getAtivo().getPatrimonio(),
-                subativo.getTipoComponente(),
-                subativo.getEspecificacao(),
-                subativo.getQuantidade(),
-                subativo.getChamadoGlpi()
+            subativo.getId(),
+            ativoId,
+            ativoPatrimonio,
+            subativo.getTipoComponente(),
+            subativo.getEspecificacao(),
+            subativo.getQuantidade(),
+            subativo.getChamadoGlpi()
         );
     }
 }

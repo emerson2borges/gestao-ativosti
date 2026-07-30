@@ -12,7 +12,7 @@ public class HistoricoAtivo {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "ativo_id", nullable = false)
+    @JoinColumn(name = "ativo_id")
     private Ativo ativo;
 
     @Column(name = "campo_alterado", nullable = false, length = 50)

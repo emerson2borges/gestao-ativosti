@@ -2,6 +2,7 @@ package com.ativosti.controller;
 
 import com.ativosti.dto.AtivoRequestDTO;
 import com.ativosti.dto.AtivoResponseDTO;
+import com.ativosti.dto.InstalacaoSubativoResponseDTO;
 import com.ativosti.service.AtivoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +44,21 @@ public class AtivoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletar(@PathVariable Long id) {
         ativoService.deletar(id);
+    }
+
+    @PostMapping("/{ativoId}/instalar-subativo/{subativoId}")
+    public InstalacaoSubativoResponseDTO instalarSubativo(
+            @PathVariable Long ativoId,
+            @PathVariable Long subativoId,
+            @RequestParam(required = false) String chamadoGlpi) {
+        return ativoService.instalarSubativo(ativoId, subativoId, chamadoGlpi);
+    }
+
+    @PostMapping("/{ativoId}/remover-subativo/{subativoId}")
+    public InstalacaoSubativoResponseDTO removerSubativo(
+            @PathVariable Long ativoId,
+            @PathVariable Long subativoId,
+            @RequestParam(required = false) String chamadoGlpi) {
+        return ativoService.removerSubativo(ativoId, subativoId, chamadoGlpi);
     }
 }
