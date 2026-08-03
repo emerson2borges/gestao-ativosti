@@ -1,0 +1,9 @@
+FROM maven:3.9.6-eclipse-temurin-21-alpine
+
+RUN apk add --no-cache curl
+
+WORKDIR /app
+
+EXPOSE 8080
+
+CMD [ "mvn", "org.springframework.boot:spring-boot-maven-plugin:run" ]
