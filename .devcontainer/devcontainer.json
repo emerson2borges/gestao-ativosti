@@ -1,0 +1,24 @@
+{
+  "name": "Gestão Ativos TI",
+  "dockerComposeFile": [
+    "../docker-compose.yml"
+  ],
+  "service": "dev",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "vscode",
+  "updateRemoteUserUID": true,
+  "overrideCommand": false,
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [4200, 8080, 5432, 8081],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Angular.ng-template",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "vmware.vscode-spring-boot",
+        "vscjava.vscode-java-pack"
+      ]
+    }
+  }
+}

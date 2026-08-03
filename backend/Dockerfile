@@ -1,6 +1,9 @@
 FROM maven:3.9.6-eclipse-temurin-21-alpine
 RUN apk add --no-cache curl   # <-- adicione esta linha
-WORKDIR /app
+# Pode retirar esse aqui
+# WORKDIR /app /workspace/backend
+# Pode deixar esse aqui
+WORKDIR /app /workspace/backend
 COPY pom.xml .
 RUN mvn dependency:go-offline
 # COPY src ./src
