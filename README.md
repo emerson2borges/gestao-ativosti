@@ -159,6 +159,11 @@ Remover volumes e dados persistidos:
 docker compose down -v
 ```
 
+Parar e remover completamente (inclusive orphans):
+```bash
+docker system prune -a --volumes -f
+docker compose down --volumes --rmi all
+```
 ---
 
 # Estrutura do Projeto

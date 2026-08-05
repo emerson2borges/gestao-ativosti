@@ -4,6 +4,10 @@ RUN apk add --no-cache curl
 
 WORKDIR /app
 
+COPY pom.xml .
+
+RUN mvn dependency:go-offline
+
 EXPOSE 8080
 
-CMD [ "mvn", "org.springframework.boot:spring-boot-maven-plugin:run" ]
+CMD ["mvn","spring-boot:run"]
