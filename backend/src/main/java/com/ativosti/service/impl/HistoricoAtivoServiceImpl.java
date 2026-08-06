@@ -7,7 +7,7 @@ import com.ativosti.model.HistoricoAtivo;
 import com.ativosti.repository.AtivoRepository;
 import com.ativosti.repository.HistoricoAtivoRepository;
 import com.ativosti.service.HistoricoAtivoService;
-import com.ativosti.util.MessageUtils;
+import com.ativosti.utils.MessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

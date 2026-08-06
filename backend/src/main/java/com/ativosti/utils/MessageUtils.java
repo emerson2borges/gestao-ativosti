@@ -1,4 +1,4 @@
-package com.ativosti.util;
+package com.ativosti.utils;
 
 import com.ativosti.exception.ResourceNotFoundException;
 import com.ativosti.exception.BusinessException;

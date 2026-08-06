@@ -7,7 +7,7 @@ import com.ativosti.model.OrdemCompra;
 import com.ativosti.repository.EstoqueInsumoRepository;
 import com.ativosti.repository.OrdemCompraRepository;
 import com.ativosti.service.EstoqueInsumoService;
-import com.ativosti.util.MessageUtils;
+import com.ativosti.utils.MessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

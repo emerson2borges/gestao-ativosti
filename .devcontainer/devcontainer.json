@@ -1,0 +1,26 @@
+{
+  "name": "Gestao Ativos TI",
+
+  "dockerComposeFile": [
+    "../docker-compose.yml"
+  ],
+
+  "service": "dev",
+
+  "workspaceFolder": "/workspace",
+
+  "remoteUser": "vscode",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "Angular.ng-template",
+        "dbaeumer.vscode-eslint",
+        "esbenp.vscode-prettier",
+        "vmware.vscode-spring-boot",
+        "vscjava.vscode-java-pack",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  }
+}
