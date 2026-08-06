@@ -131,6 +131,12 @@ http://localhost:8081
 
 Para executar somente os containers isolados:
 
+Ambiente de Desenvolvimento:
+```bash
+docker compose -f docker-compose.yml up -d
+```
+
+Ambiente de Produção:
 ```bash
 docker compose up --build -d
 ```
@@ -149,6 +155,12 @@ docker compose logs -f
 
 Parar aplicação:
 
+Ambiente de Desenvolvimento:
+```bash
+docker compose -f docker-compose.yml down
+```
+
+Ambiente de Produção:
 ```bash
 docker compose down
 ```
