@@ -5,6 +5,7 @@ import { LocalizacoesListComponent } from './pages/localizacoes/localizacoes-lis
 import { OrdensCompraListComponent } from './pages/ordens-compra/ordens-compra-list.component';
 import { TiposAtivoListComponent } from './pages/tipos-ativo/tipos-ativo-list.component';
 import { AtivosListComponent } from './pages/ativos/ativos-list.component';
+import { SubativosListComponent } from './pages/subativos/subativos-list.component';
 
 export const routes: Routes = [
   {
@@ -17,6 +18,7 @@ export const routes: Routes = [
       { path: 'ordens-compra', component: OrdensCompraListComponent },
       { path: 'tipos-ativo', component: TiposAtivoListComponent },
       { path: 'ativos', component: AtivosListComponent },
+      { path: 'subativos', component: SubativosListComponent },
     ]
   },
   { path: '**', redirectTo: '' }
