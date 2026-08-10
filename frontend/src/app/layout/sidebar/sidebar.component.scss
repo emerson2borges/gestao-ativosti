@@ -1,0 +1,131 @@
+.app-sidebar {
+  width: var(--sidebar-width, 260px);
+  background: #0f172a;
+  color: #94a3b8;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 20;
+}
+
+.sidebar-brand {
+  height: var(--header-height, 70px);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+  .brand-logo {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+
+    .title {
+      font-weight: 700;
+      color: #ffffff;
+      font-size: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    .subtitle {
+      font-size: 0.7rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+  }
+}
+
+.sidebar-menu {
+  flex: 1;
+  padding: 1.5rem 1rem;
+  overflow-y: auto;
+}
+
+.menu-section {
+  margin-bottom: 1.5rem;
+
+  .section-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #475569;
+    margin-bottom: 0.5rem;
+    padding-left: 0.75rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 8px;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  margin-bottom: 0.25rem;
+
+  .item-icon {
+    font-size: 1.1rem;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #f8fafc;
+  }
+
+  &.active {
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+
+    .item-icon {
+      color: #ffffff;
+    }
+  }
+
+  .item-badge {
+    margin-left: auto;
+    background: #ef4444;
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.15rem 0.45rem;
+    border-radius: 9999px;
+  }
+}
+
+.sidebar-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.75rem;
+  color: #475569;
+  text-align: center;
+}

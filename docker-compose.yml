@@ -56,7 +56,7 @@ services:
     ports:
       - "4200:4200"
     volumes:
-      - ./frontend:/app
+      - ./frontend:/workspace/frontend
     depends_on:
       backend:
         condition: service_healthy
