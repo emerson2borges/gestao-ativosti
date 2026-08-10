@@ -4,6 +4,7 @@ import { CidadesListComponent } from './pages/cidades/cidades-list.component';
 import { LocalizacoesListComponent } from './pages/localizacoes/localizacoes-list.component';
 import { OrdensCompraListComponent } from './pages/ordens-compra/ordens-compra-list.component';
 import { TiposAtivoListComponent } from './pages/tipos-ativo/tipos-ativo-list.component';
+import { AtivosListComponent } from './pages/ativos/ativos-list.component';
 
 export const routes: Routes = [
   {
@@ -15,6 +16,7 @@ export const routes: Routes = [
       { path: 'localizacoes', component: LocalizacoesListComponent },
       { path: 'ordens-compra', component: OrdensCompraListComponent },
       { path: 'tipos-ativo', component: TiposAtivoListComponent },
+      { path: 'ativos', component: AtivosListComponent },
     ]
   },
   { path: '**', redirectTo: '' }
