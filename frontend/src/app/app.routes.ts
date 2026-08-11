@@ -11,6 +11,7 @@ import { HistoricoListComponent } from './pages/historico/historico-list.compone
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ConfiguracoesComponent } from './pages/configuracoes/configuracoes.component';
 import { MovimentacoesComponent } from './pages/movimentacoes/movimentacoes.component';
+import { RelatoriosComponent } from './pages/relatorios/relatorios.component';
 
 export const routes: Routes = [
   {
@@ -29,6 +30,7 @@ export const routes: Routes = [
       { path: 'historico', component: HistoricoListComponent },
       { path: 'configuracoes', component: ConfiguracoesComponent },
       { path: 'movimentacoes', component: MovimentacoesComponent },
+      { path: 'relatorios', component: RelatoriosComponent },
     ]
   },
   { path: '**', redirectTo: '' }
