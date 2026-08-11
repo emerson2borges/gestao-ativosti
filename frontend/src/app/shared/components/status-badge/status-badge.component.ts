@@ -5,49 +5,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-status-badge',
   standalone: true,
   imports: [CommonModule],
-  template: `
-    <span class="status-badge" [ngClass]="getBadgeClass()">
-      <i [class]="getIconClass()"></i>
-      {{ status }}
-    </span>
-  `,
-  styles: [`
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      padding: 0.3rem 0.75rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-    }
-
-    .badge-em-uso {
-      background: #dcfce7;
-      color: #15803d;
-    }
-
-    .badge-disponivel {
-      background: #e0e7ff;
-      color: #4338ca;
-    }
-
-    .badge-manutencao {
-      background: #fef3c7;
-      color: #b45309;
-    }
-
-    .badge-descartado {
-      background: #fee2e2;
-      color: #b91c1c;
-    }
-
-    .badge-default {
-      background: #f1f5f9;
-      color: #475569;
-    }
-  `]
+  templateUrl: './status-badge.component.html',
+  styleUrl: './status-badge.component.scss'
 })
 export class StatusBadgeComponent {
   @Input() status: string = '';
