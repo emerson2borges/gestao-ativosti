@@ -9,6 +9,7 @@ import { SubativosListComponent } from './pages/subativos/subativos-list.compone
 import { EstoqueListComponent } from './pages/estoque/estoque-list.component';
 import { HistoricoListComponent } from './pages/historico/historico-list.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { ConfiguracoesComponent } from './pages/configuracoes/configuracoes.component';
 
 export const routes: Routes = [
   {
@@ -25,6 +26,7 @@ export const routes: Routes = [
       { path: 'subativos', component: SubativosListComponent },
       { path: 'estoque', component: EstoqueListComponent },
       { path: 'historico', component: HistoricoListComponent },
+      { path: 'configuracoes', component: ConfiguracoesComponent },
     ]
   },
   { path: '**', redirectTo: '' }
