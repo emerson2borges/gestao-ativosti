@@ -7,6 +7,7 @@ import { TiposAtivoListComponent } from './pages/tipos-ativo/tipos-ativo-list.co
 import { AtivosListComponent } from './pages/ativos/ativos-list.component';
 import { SubativosListComponent } from './pages/subativos/subativos-list.component';
 import { EstoqueListComponent } from './pages/estoque/estoque-list.component';
+import { HistoricoListComponent } from './pages/historico/historico-list.component';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,7 @@ export const routes: Routes = [
       { path: 'ativos', component: AtivosListComponent },
       { path: 'subativos', component: SubativosListComponent },
       { path: 'estoque', component: EstoqueListComponent },
+      { path: 'historico', component: HistoricoListComponent },
     ]
   },
   { path: '**', redirectTo: '' }
