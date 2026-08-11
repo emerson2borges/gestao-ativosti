@@ -1,0 +1,72 @@
+<app-page-header title="Subativos Internos" subtitle="Gerenciamento de componentes (RAM, SSD, GPU, etc.)">
+  <button pButton label="Novo Componente" icon="pi pi-plus" class="p-button-indigo" (click)="abrirModalNovo()"></button>
+</app-page-header>
+
+<div class="card-panel">
+  <p-table [value]="subativos" [paginator]="true" [rows]="10" styleClass="p-datatable-striped">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Tipo</th>
+        <th>Fabricante / Modelo</th>
+        <th>Nº Série</th>
+        <th>Especificações</th>
+        <th>Ativo Vinculado</th>
+        <th>Status</th>
+        <th class="text-center">Ações</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item>
+      <tr>
+        <td><strong>{{ item.tipo }}</strong></td>
+        <td>{{ item.fabricante }} {{ item.modelo }}</td>
+        <td><code>{{ item.numeroSerie || 'N/A' }}</code></td>
+        <td>{{ item.especificacoesTecnicas || '-' }}</td>
+        <td>{{ item.ativoPatrimonio || 'Em Estoque' }}</td>
+        <td><app-status-badge [status]="item.status"></app-status-badge></td>
+        <td class="text-center actions-cell">
+          <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="abrirModalEditar(item)"></button>
+          <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger p-button-sm" (click)="excluir(item)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog [(visible)]="displayModal" [header]="isEdit ? 'Editar Subativo' : 'Cadastrar Subativo Interno'" [modal]="true" [style]="{ width: '550px' }">
+  <form [formGroup]="form" (ngSubmit)="salvar()">
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Tipo *</label>
+        <input pInputText formControlName="tipo" placeholder="Ex: Memória RAM 16GB" />
+      </div>
+      <div class="form-field">
+        <label>Fabricante</label>
+        <input pInputText formControlName="fabricante" placeholder="Ex: Kingston, Samsung" />
+      </div>
+      <div class="form-field">
+        <label>Modelo</label>
+        <input pInputText formControlName="modelo" placeholder="Ex: DDR4 3200MHz" />
+      </div>
+      <div class="form-field">
+        <label>Número de Série</label>
+        <input pInputText formControlName="numeroSerie" placeholder="Ex: SN-99881122" />
+      </div>
+      <div class="form-field full">
+        <label>Especificações Técnicas</label>
+        <input pInputText formControlName="especificacoesTecnicas" placeholder="Detalhes de capacidade/clock/barramento" />
+      </div>
+      <div class="form-field">
+        <label>Status *</label>
+        <p-select [options]="statusOpts" optionLabel="label" optionValue="value" formControlName="status" styleClass="w-full"></p-select>
+      </div>
+      <div class="form-field">
+        <label>Ativo (Equipamento)</label>
+        <p-select [options]="ativos" optionLabel="patrimonio" optionValue="id" formControlName="ativoId" placeholder="Nenhum (Em Estoque)" styleClass="w-full"></p-select>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button pButton type="button" label="Cancelar" class="p-button-text" (click)="displayModal = false"></button>
+      <button pButton type="submit" [label]="isEdit ? 'Salvar' : 'Cadastrar'" [disabled]="form.invalid"></button>
+    </div>
+  </form>
+</p-dialog>

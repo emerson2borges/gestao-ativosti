@@ -1,0 +1,141 @@
+<p-toast></p-toast>
+<app-page-header title="Gestão de Ativos TI" subtitle="Listagem, cadastro e controle de equipamentos">
+  <button pButton label="Novo Ativo" icon="pi pi-plus" class="p-button-indigo" (click)="abrirModalNovo()"></button>
+</app-page-header>
+
+<div class="card-panel">
+  <!-- Filtros e Busca Global -->
+  <div class="table-header">
+    <div class="search-input">
+      <i class="pi pi-search"></i>
+      <input type="text" pInputText placeholder="Buscar por patrimônio, hostname ou responsável..." (input)="onSearch($event)" />
+    </div>
+  </div>
+
+  <!-- Tabela PrimeNG -->
+  <p-table 
+    [value]="filteredAtivos" 
+    [paginator]="true" 
+    [rows]="10" 
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Mostrando {first} até {last} de {totalRecords} ativos"
+    styleClass="p-datatable-striped">
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="patrimonio">Patrimônio <p-sortIcon field="patrimonio"></p-sortIcon></th>
+        <th pSortableColumn="tipoNome">Tipo de Ativo <p-sortIcon field="tipoNome"></p-sortIcon></th>
+        <th pSortableColumn="hostnameAtual">Hostname <p-sortIcon field="hostnameAtual"></p-sortIcon></th>
+        <th pSortableColumn="responsavel">Responsável <p-sortIcon field="responsavel"></p-sortIcon></th>
+        <th pSortableColumn="localizacaoNome">Localização <p-sortIcon field="localizacaoNome"></p-sortIcon></th>
+        <th pSortableColumn="status">Status <p-sortIcon field="status"></p-sortIcon></th>
+        <th class="text-center">Ações</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-ativo>
+      <tr>
+        <td><strong>{{ ativo.patrimonio }}</strong></td>
+        <td>{{ ativo.tipoNome || 'N/A' }}</td>
+        <td>{{ ativo.hostnameAtual || '-' }}</td>
+        <td>{{ ativo.responsavel || 'Sem responsável' }}</td>
+        <td>{{ ativo.localizacaoNome || 'N/A' }}</td>
+        <td>
+          <app-status-badge [status]="ativo.status"></app-status-badge>
+        </td>
+        <td class="text-center actions-cell">
+          <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="abrirModalEditar(ativo)" title="Editar"></button>
+          <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger p-button-sm" (click)="excluirAtivo(ativo)" title="Excluir"></button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="7" class="text-center p-4 text-muted">Nenhum ativo encontrado.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- Modal Form de Cadastro/Edição -->
+<p-dialog 
+  [(visible)]="displayModal" 
+  [header]="isEdit ? 'Editar Ativo TI' : 'Cadastrar Novo Ativo TI'" 
+  [modal]="true" 
+  [style]="{ width: '600px' }"
+  styleClass="custom-dialog">
+
+  <form [formGroup]="formAtivo" (ngSubmit)="salvarAtivo()">
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="patrimonio">Número de Patrimônio *</label>
+        <input id="patrimonio" type="text" pInputText formControlName="patrimonio" placeholder="Ex: PAT-2026-101" />
+      </div>
+
+      <div class="form-field">
+        <label for="tipoId">Tipo de Ativo *</label>
+        <p-select 
+          id="tipoId"
+          [options]="tiposAtivo" 
+          optionLabel="nome" 
+          optionValue="id" 
+          formControlName="tipoId" 
+          placeholder="Selecione o tipo..."
+          styleClass="w-full">
+        </p-select>
+      </div>
+
+      <div class="form-field">
+        <label for="hostnameAtual">Hostname</label>
+        <input id="hostnameAtual" type="text" pInputText formControlName="hostnameAtual" placeholder="Ex: NOTE-DEV-01" />
+      </div>
+
+      <div class="form-field">
+        <label for="responsavel">Responsável / Usuário</label>
+        <input id="responsavel" type="text" pInputText formControlName="responsavel" placeholder="Nome do funcionário/setor" />
+      </div>
+
+      <div class="form-field">
+        <label for="localizacaoId">Localização *</label>
+        <p-select 
+          id="localizacaoId"
+          [options]="localizacoes" 
+          optionLabel="nomeBlocoSetor" 
+          optionValue="id" 
+          formControlName="localizacaoId" 
+          placeholder="Selecione a localização..."
+          styleClass="w-full">
+        </p-select>
+      </div>
+
+      <div class="form-field">
+        <label for="status">Status *</label>
+        <p-select 
+          id="status"
+          [options]="statusOptions" 
+          optionLabel="label" 
+          optionValue="value" 
+          formControlName="status" 
+          placeholder="Selecione o status..."
+          styleClass="w-full">
+        </p-select>
+      </div>
+
+      <div class="form-field full-width">
+        <label for="ordemCompraId">Ordem de Compra</label>
+        <p-select 
+          id="ordemCompraId"
+          [options]="ordensCompra" 
+          optionLabel="numeroOrdem" 
+          optionValue="id" 
+          formControlName="ordemCompraId" 
+          placeholder="Vincular a uma Ordem de Compra (Opcional)"
+          styleClass="w-full">
+        </p-select>
+      </div>
+    </div>
+
+    <div class="dialog-footer">
+      <button pButton type="button" label="Cancelar" class="p-button-text" (click)="displayModal = false"></button>
+      <button pButton type="submit" [label]="isEdit ? 'Salvar Alterações' : 'Cadastrar'" [disabled]="formAtivo.invalid"></button>
+    </div>
+  </form>
+</p-dialog>

@@ -1,0 +1,48 @@
+<app-page-header title="Relatórios & Exportação" subtitle="Geração de relatórios operacionais e gerenciais do inventário de TI">
+</app-page-header>
+
+<div class="card-panel">
+  <div class="reports-grid">
+    <div class="report-card">
+      <div class="report-icon">
+        <i class="pi pi-desktop"></i>
+      </div>
+      <div class="report-info">
+        <h4>Relatório Geral de Ativos</h4>
+        <p>Listagem completa com patrimônio, tipo, localização, responsável e status.</p>
+      </div>
+      <div class="report-actions">
+        <button pButton label="Exportar CSV" icon="pi pi-download" class="p-button-outlined p-button-sm" (click)="exportar('ativos', 'csv')"></button>
+        <button pButton label="Exportar PDF" icon="pi pi-file-pdf" class="p-button-indigo p-button-sm" (click)="exportar('ativos', 'pdf')"></button>
+      </div>
+    </div>
+
+    <div class="report-card">
+      <div class="report-icon icon-amber">
+        <i class="pi pi-box"></i>
+      </div>
+      <div class="report-info">
+        <h4>Insumos & Suprimentos</h4>
+        <p>Posição atual de estoque, alertas de escassez e histórico de consumo.</p>
+      </div>
+      <div class="report-actions">
+        <button pButton label="Exportar CSV" icon="pi pi-download" class="p-button-outlined p-button-sm" (click)="exportar('insumos', 'csv')"></button>
+        <button pButton label="Exportar PDF" icon="pi pi-file-pdf" class="p-button-indigo p-button-sm" (click)="exportar('insumos', 'pdf')"></button>
+      </div>
+    </div>
+
+    <div class="report-card">
+      <div class="report-icon icon-green">
+        <i class="pi pi-history"></i>
+      </div>
+      <div class="report-info">
+        <h4>Logs de Movimentação</h4>
+        <p>Trilha de auditoria de transferências e alterações realizadas no parque de TI.</p>
+      </div>
+      <div class="report-actions">
+        <button pButton label="Exportar CSV" icon="pi pi-download" class="p-button-outlined p-button-sm" (click)="exportar('movimentacoes', 'csv')"></button>
+        <button pButton label="Exportar PDF" icon="pi pi-file-pdf" class="p-button-indigo p-button-sm" (click)="exportar('movimentacoes', 'pdf')"></button>
+      </div>
+    </div>
+  </div>
+</div>

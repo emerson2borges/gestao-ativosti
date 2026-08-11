@@ -7,7 +7,7 @@ import com.ativosti.model.Localizacao;
 import com.ativosti.repository.CidadeRepository;
 import com.ativosti.repository.LocalizacaoRepository;
 import com.ativosti.service.LocalizacaoService;
-import com.ativosti.util.MessageUtils;
+import com.ativosti.utils.MessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -5,7 +5,7 @@ import com.ativosti.dto.TipoAtivoResponseDTO;
 import com.ativosti.model.TipoAtivo;
 import com.ativosti.repository.TipoAtivoRepository;
 import com.ativosti.service.TipoAtivoService;
-import com.ativosti.util.MessageUtils;
+import com.ativosti.utils.MessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

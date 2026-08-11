@@ -1,3 +1,37 @@
 import { Routes } from '@angular/router';
+import { AppLayoutComponent } from './layout/app-layout/app-layout.component';
+import { CidadesListComponent } from './pages/cidades/cidades-list.component';
+import { LocalizacoesListComponent } from './pages/localizacoes/localizacoes-list.component';
+import { OrdensCompraListComponent } from './pages/ordens-compra/ordens-compra-list.component';
+import { TiposAtivoListComponent } from './pages/tipos-ativo/tipos-ativo-list.component';
+import { AtivosListComponent } from './pages/ativos/ativos-list.component';
+import { SubativosListComponent } from './pages/subativos/subativos-list.component';
+import { EstoqueListComponent } from './pages/estoque/estoque-list.component';
+import { HistoricoListComponent } from './pages/historico/historico-list.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { ConfiguracoesComponent } from './pages/configuracoes/configuracoes.component';
+import { MovimentacoesComponent } from './pages/movimentacoes/movimentacoes.component';
+import { RelatoriosComponent } from './pages/relatorios/relatorios.component';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  {
+    path: '',
+    component: AppLayoutComponent,
+    children: [
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
+      { path: 'cidades', component: CidadesListComponent },
+      { path: 'localizacoes', component: LocalizacoesListComponent },
+      { path: 'ordens-compra', component: OrdensCompraListComponent },
+      { path: 'tipos-ativo', component: TiposAtivoListComponent },
+      { path: 'ativos', component: AtivosListComponent },
+      { path: 'subativos', component: SubativosListComponent },
+      { path: 'estoque', component: EstoqueListComponent },
+      { path: 'historico', component: HistoricoListComponent },
+      { path: 'configuracoes', component: ConfiguracoesComponent },
+      { path: 'movimentacoes', component: MovimentacoesComponent },
+      { path: 'relatorios', component: RelatoriosComponent },
+    ]
+  },
+  { path: '**', redirectTo: '' }
+];

@@ -21,7 +21,7 @@ import com.ativosti.repository.OrdemCompraRepository;
 import com.ativosti.repository.TipoAtivoRepository;
 import com.ativosti.repository.HistoricoAtivoRepository;
 import com.ativosti.service.AtivoService;
-import com.ativosti.util.MessageUtils;
+import com.ativosti.utils.MessageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

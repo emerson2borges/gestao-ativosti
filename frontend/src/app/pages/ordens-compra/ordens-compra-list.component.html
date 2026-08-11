@@ -1,0 +1,62 @@
+<app-page-header title="Ordens de Compra" subtitle="Histórico e rastreamento de compras de equipamentos de TI">
+  <button pButton label="Nova Ordem" icon="pi pi-plus" class="p-button-indigo" (click)="abrirModalNovo()"></button>
+</app-page-header>
+
+<div class="card-panel">
+  <p-table [value]="ordens" [paginator]="true" [rows]="10" styleClass="p-datatable-striped">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Nº Ordem</th>
+        <th>Fornecedor</th>
+        <th>Data de Compra</th>
+        <th>Valor Total (R$)</th>
+        <th>Descrição</th>
+        <th class="text-center">Ações</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item>
+      <tr>
+        <td><strong>{{ item.numeroOrdem }}</strong></td>
+        <td>{{ item.fornecedor || 'N/A' }}</td>
+        <td>{{ item.dataCompra | date:'dd/MM/yyyy' }}</td>
+        <td><strong>R$ {{ item.valorTotal | number:'1.2-2' }}</strong></td>
+        <td>{{ item.descricao || '-' }}</td>
+        <td class="text-center actions-cell">
+          <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="abrirModalEditar(item)"></button>
+          <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger p-button-sm" (click)="excluir(item)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog [(visible)]="displayModal" [header]="isEdit ? 'Editar Ordem de Compra' : 'Cadastrar Ordem de Compra'" [modal]="true" [style]="{ width: '500px' }">
+  <form [formGroup]="form" (ngSubmit)="salvar()">
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Nº Ordem de Compra *</label>
+        <input pInputText formControlName="numeroOrdem" placeholder="Ex: OC-2026/044" />
+      </div>
+      <div class="form-field">
+        <label>Fornecedor</label>
+        <input pInputText formControlName="fornecedor" placeholder="Ex: Dell Brasil, Kalunga" />
+      </div>
+      <div class="form-field">
+        <label>Data de Compra</label>
+        <input type="date" pInputText formControlName="dataCompra" />
+      </div>
+      <div class="form-field">
+        <label>Valor Total (R$)</label>
+        <input type="number" step="0.01" pInputText formControlName="valorTotal" placeholder="Ex: 15400.00" />
+      </div>
+      <div class="form-field full">
+        <label>Descrição / Observações</label>
+        <input pInputText formControlName="descricao" placeholder="Detalhes do lote ou nota fiscal" />
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button pButton type="button" label="Cancelar" class="p-button-text" (click)="displayModal = false"></button>
+      <button pButton type="submit" [label]="isEdit ? 'Salvar' : 'Cadastrar'" [disabled]="form.invalid"></button>
+    </div>
+  </form>
+</p-dialog>

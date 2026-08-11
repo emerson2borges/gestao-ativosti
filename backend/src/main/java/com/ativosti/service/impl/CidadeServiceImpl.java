@@ -3,7 +3,7 @@ package com.ativosti.service.impl;
 import com.ativosti.dto.CidadeRequestDTO;
 import com.ativosti.dto.CidadeResponseDTO;
 import com.ativosti.model.Cidade;
-import com.ativosti.util.MessageUtils;
+import com.ativosti.utils.MessageUtils;
 import com.ativosti.service.CidadeService;
 import com.ativosti.repository.CidadeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
