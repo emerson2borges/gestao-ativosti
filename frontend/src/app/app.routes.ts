@@ -10,6 +10,7 @@ import { EstoqueListComponent } from './pages/estoque/estoque-list.component';
 import { HistoricoListComponent } from './pages/historico/historico-list.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ConfiguracoesComponent } from './pages/configuracoes/configuracoes.component';
+import { MovimentacoesComponent } from './pages/movimentacoes/movimentacoes.component';
 
 export const routes: Routes = [
   {
@@ -27,6 +28,7 @@ export const routes: Routes = [
       { path: 'estoque', component: EstoqueListComponent },
       { path: 'historico', component: HistoricoListComponent },
       { path: 'configuracoes', component: ConfiguracoesComponent },
+      { path: 'movimentacoes', component: MovimentacoesComponent },
     ]
   },
   { path: '**', redirectTo: '' }
