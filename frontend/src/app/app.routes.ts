@@ -6,6 +6,7 @@ import { OrdensCompraListComponent } from './pages/ordens-compra/ordens-compra-l
 import { TiposAtivoListComponent } from './pages/tipos-ativo/tipos-ativo-list.component';
 import { AtivosListComponent } from './pages/ativos/ativos-list.component';
 import { SubativosListComponent } from './pages/subativos/subativos-list.component';
+import { EstoqueListComponent } from './pages/estoque/estoque-list.component';
 
 export const routes: Routes = [
   {
@@ -19,6 +20,7 @@ export const routes: Routes = [
       { path: 'tipos-ativo', component: TiposAtivoListComponent },
       { path: 'ativos', component: AtivosListComponent },
       { path: 'subativos', component: SubativosListComponent },
+      { path: 'estoque', component: EstoqueListComponent },
     ]
   },
   { path: '**', redirectTo: '' }
