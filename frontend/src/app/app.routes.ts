@@ -8,6 +8,7 @@ import { AtivosListComponent } from './pages/ativos/ativos-list.component';
 import { SubativosListComponent } from './pages/subativos/subativos-list.component';
 import { EstoqueListComponent } from './pages/estoque/estoque-list.component';
 import { HistoricoListComponent } from './pages/historico/historico-list.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 export const routes: Routes = [
   {
@@ -15,6 +16,7 @@ export const routes: Routes = [
     component: AppLayoutComponent,
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: DashboardComponent },
       { path: 'cidades', component: CidadesListComponent },
       { path: 'localizacoes', component: LocalizacoesListComponent },
       { path: 'ordens-compra', component: OrdensCompraListComponent },

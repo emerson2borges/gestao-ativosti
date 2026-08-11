@@ -1,0 +1,109 @@
+<app-page-header title="Dashboard TI" subtitle="Visão geral e métricas do parque de ativos tecnológicos">
+  <button pButton label="Novo Ativo" icon="pi pi-plus" class="p-button-indigo" routerLink="/ativos"></button>
+</app-page-header>
+
+<!-- Cards de Métricas -->
+<div class="metrics-grid">
+  <div class="card-panel metric-card">
+    <div class="metric-icon icon-blue">
+      <i class="pi pi-desktop"></i>
+    </div>
+    <div class="metric-data">
+      <span class="metric-value">{{ totalAtivos }}</span>
+      <span class="metric-label">Total de Ativos</span>
+    </div>
+  </div>
+
+  <div class="card-panel metric-card">
+    <div class="metric-icon icon-green">
+      <i class="pi pi-check-circle"></i>
+    </div>
+    <div class="metric-data">
+      <span class="metric-value">{{ ativosEmUso }}</span>
+      <span class="metric-label">Em Uso</span>
+    </div>
+  </div>
+
+  <div class="card-panel metric-card">
+    <div class="metric-icon icon-amber">
+      <i class="pi pi-cog"></i>
+    </div>
+    <div class="metric-data">
+      <span class="metric-value">{{ ativosManutencao }}</span>
+      <span class="metric-label">Em Manutenção</span>
+    </div>
+  </div>
+
+  <div class="card-panel metric-card">
+    <div class="metric-icon icon-red">
+      <i class="pi pi-exclamation-triangle"></i>
+    </div>
+    <div class="metric-data">
+      <span class="metric-value">{{ insumosCriticos }}</span>
+      <span class="metric-label">Insumos em Alerta</span>
+    </div>
+  </div>
+</div>
+
+<div class="content-grid">
+  <!-- Tabela de Últimos Ativos Cadastrados -->
+  <div class="card-panel table-section">
+    <div class="section-header">
+      <h3><i class="pi pi-list"></i> Ativos Recentes</h3>
+      <button pButton label="Ver Todos" icon="pi pi-arrow-right" class="p-button-text p-button-sm" routerLink="/ativos"></button>
+    </div>
+
+    <p-table [value]="recentAtivos" [rows]="5" styleClass="p-datatable-sm">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Patrimônio</th>
+          <th>Tipo</th>
+          <th>Responsável</th>
+          <th>Localização</th>
+          <th>Status</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-ativo>
+        <tr>
+          <td><strong>{{ ativo.patrimonio }}</strong></td>
+          <td>{{ ativo.tipoNome || 'N/A' }}</td>
+          <td>{{ ativo.responsavel || 'Não alocado' }}</td>
+          <td>{{ ativo.localizacaoNome || 'N/A' }}</td>
+          <td>
+            <app-status-badge [status]="ativo.status"></app-status-badge>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5" class="text-center p-4 text-muted">Nenhum ativo cadastrado até o momento.</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Card de Suprimentos Críticos -->
+  <div class="card-panel supplies-section">
+    <div class="section-header">
+      <h3><i class="pi pi-box"></i> Estoque Crítico</h3>
+      <button pButton label="Gerenciar" class="p-button-text p-button-sm" routerLink="/estoque"></button>
+    </div>
+
+    <div class="supplies-list">
+      <div *ngFor="let item of criticalSupplies" class="supply-item">
+        <div class="supply-info">
+          <span class="name">{{ item.nomeItem }}</span>
+          <span class="category">{{ item.categoria || 'Geral' }}</span>
+        </div>
+        <div class="supply-qty">
+          <span class="current">{{ item.quantidadeAtual }} un</span>
+          <span class="min">Mín: {{ item.quantidadeMinima }}</span>
+        </div>
+      </div>
+      <div *ngIf="criticalSupplies.length === 0" class="empty-state">
+        <i class="pi pi-check-circle text-green"></i>
+        <span>Todos os estoques estão em níveis normais.</span>
+      </div>
+    </div>
+  </div>
+</div>
