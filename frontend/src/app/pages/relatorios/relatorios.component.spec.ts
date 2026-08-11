@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RelatoriosComponent } from './relatorios.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('RelatoriosComponent', () => {
   let component: RelatoriosComponent;
@@ -8,10 +7,10 @@ describe('RelatoriosComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RelatoriosComponent, HttpClientTestingModule]
+      imports: [RelatoriosComponent]
     })
-    .compileComponents();
-    
+      .compileComponents();
+
     fixture = TestBed.createComponent(RelatoriosComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
