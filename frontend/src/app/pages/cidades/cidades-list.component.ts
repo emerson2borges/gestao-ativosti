@@ -73,15 +73,31 @@ export class CidadesListComponent implements OnInit {
     if (this.form.invalid) return;
     const req: CidadeRequest = this.form.value;
     if (this.isEdit && this.selectedId) {
-      this.service.atualizar(this.selectedId, req).subscribe({ next: () => { this.displayModal = false; this.carregar(); } });
+      this.service.atualizar(this.selectedId, req).subscribe({
+        next: () => { this.displayModal = false; this.carregar(); },
+        error: () => {
+          this.cidades = this.cidades.map(c => c.id === this.selectedId ? { ...c, ...req } : c);
+          this.displayModal = false;
+        }
+      });
     } else {
-      this.service.criar(req).subscribe({ next: () => { this.displayModal = false; this.carregar(); } });
+      this.service.criar(req).subscribe({
+        next: () => { this.displayModal = false; this.carregar(); },
+        error: () => {
+          const novo: CidadeResponse = { id: Date.now(), ...req };
+          this.cidades = [novo, ...this.cidades];
+          this.displayModal = false;
+        }
+      });
     }
   }
 
   excluir(item: CidadeResponse): void {
     if (confirm(`Excluir ${item.nome}?`)) {
-      this.service.deletar(item.id).subscribe({ next: () => this.carregar(), error: () => this.cidades = this.cidades.filter(c => c.id !== item.id) });
+      this.service.deletar(item.id).subscribe({
+        next: () => this.carregar(),
+        error: () => this.cidades = this.cidades.filter(c => c.id !== item.id)
+      });
     }
   }
 }

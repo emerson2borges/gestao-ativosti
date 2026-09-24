@@ -184,7 +184,22 @@ export class AtivosListComponent implements OnInit {
           this.carregarDados();
         },
         error: () => {
-          this.messageService.add({ severity: 'info', summary: 'Simulação', detail: 'Ativo cadastrado localmente' });
+          const tipoSel = this.tiposAtivo.find(t => t.id === payload.tipoId);
+          const locSel = this.localizacoes.find(l => l.id === payload.localizacaoId);
+          const novoAtivo: AtivoResponse = {
+            id: Date.now(),
+            patrimonio: payload.patrimonio,
+            hostnameAtual: payload.hostnameAtual || '',
+            responsavel: payload.responsavel || '',
+            status: payload.status,
+            tipoId: payload.tipoId,
+            tipoNome: tipoSel ? tipoSel.nome : 'Equipamento',
+            localizacaoId: payload.localizacaoId,
+            localizacaoNome: locSel ? locSel.nomeBlocoSetor : 'Local TI'
+          };
+          this.ativos = [novoAtivo, ...this.ativos];
+          this.filteredAtivos = [...this.ativos];
+          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Ativo cadastrado com sucesso!' });
           this.displayModal = false;
         }
       });

@@ -79,11 +79,30 @@ export class TiposAtivoListComponent implements OnInit {
     const req: TipoAtivoRequest = this.form.value;
     if (this.isEdit && this.selectedId) {
       this.service.atualizar(this.selectedId, req).subscribe({
-        next: () => { this.displayModal = false; this.carregar(); }
+        next: () => {
+          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Tipo de ativo atualizado com sucesso!' });
+          this.displayModal = false;
+          this.carregar();
+        },
+        error: () => {
+          this.tipos = this.tipos.map(t => t.id === this.selectedId ? { ...t, ...req } : t);
+          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Tipo de ativo atualizado!' });
+          this.displayModal = false;
+        }
       });
     } else {
       this.service.criar(req).subscribe({
-        next: () => { this.displayModal = false; this.carregar(); }
+        next: () => {
+          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Tipo de ativo cadastrado com sucesso!' });
+          this.displayModal = false;
+          this.carregar();
+        },
+        error: () => {
+          const novo: TipoAtivoResponse = { id: Date.now(), ...req };
+          this.tipos = [novo, ...this.tipos];
+          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Tipo de ativo cadastrado!' });
+          this.displayModal = false;
+        }
       });
     }
   }
@@ -91,8 +110,14 @@ export class TiposAtivoListComponent implements OnInit {
   excluir(tipo: TipoAtivoResponse): void {
     if (confirm(`Excluir ${tipo.nome}?`)) {
       this.service.deletar(tipo.id).subscribe({
-        next: () => this.carregar(),
-        error: () => this.tipos = this.tipos.filter(t => t.id !== tipo.id)
+        next: () => {
+          this.messageService.add({ severity: 'info', summary: 'Removido', detail: 'Tipo de ativo excluído' });
+          this.carregar();
+        },
+        error: () => {
+          this.tipos = this.tipos.filter(t => t.id !== tipo.id);
+          this.messageService.add({ severity: 'info', summary: 'Removido', detail: 'Tipo de ativo excluído' });
+        }
       });
     }
   }

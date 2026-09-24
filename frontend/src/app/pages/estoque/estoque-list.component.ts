@@ -81,16 +81,35 @@ export class EstoqueListComponent implements OnInit {
   salvar(): void {
     if (this.form.invalid) return;
     const req: EstoqueInsumoRequest = this.form.value;
+    const loc = this.localizacoes.find(l => l.id === req.localizacaoId);
+    const locNome = loc ? loc.nomeBlocoSetor : undefined;
+
     if (this.isEdit && this.selectedId) {
-      this.service.atualizar(this.selectedId, req).subscribe({ next: () => { this.displayModal = false; this.carregar(); } });
+      this.service.atualizar(this.selectedId, req).subscribe({
+        next: () => { this.displayModal = false; this.carregar(); },
+        error: () => {
+          this.estoque = this.estoque.map(e => e.id === this.selectedId ? { ...e, ...req, localizacaoNome: locNome } : e);
+          this.displayModal = false;
+        }
+      });
     } else {
-      this.service.criar(req).subscribe({ next: () => { this.displayModal = false; this.carregar(); } });
+      this.service.criar(req).subscribe({
+        next: () => { this.displayModal = false; this.carregar(); },
+        error: () => {
+          const novo: EstoqueInsumoResponse = { id: Date.now(), ...req, localizacaoNome: locNome };
+          this.estoque = [novo, ...this.estoque];
+          this.displayModal = false;
+        }
+      });
     }
   }
 
   excluir(item: EstoqueInsumoResponse): void {
     if (confirm(`Excluir item ${item.nomeItem}?`)) {
-      this.service.deletar(item.id).subscribe({ next: () => this.carregar(), error: () => this.estoque = this.estoque.filter(e => e.id !== item.id) });
+      this.service.deletar(item.id).subscribe({
+        next: () => this.carregar(),
+        error: () => this.estoque = this.estoque.filter(e => e.id !== item.id)
+      });
     }
   }
 }

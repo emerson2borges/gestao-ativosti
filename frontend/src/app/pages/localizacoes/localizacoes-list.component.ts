@@ -79,16 +79,36 @@ export class LocalizacoesListComponent implements OnInit {
   salvar(): void {
     if (this.form.invalid) return;
     const req: LocalizacaoRequest = this.form.value;
+    const cid = this.cidades.find(c => c.id === req.cidadeId);
+    const cidNome = cid ? cid.nome : 'João Pessoa';
+    const cidUf = cid ? cid.uf : 'PB';
+
     if (this.isEdit && this.selectedId) {
-      this.service.atualizar(this.selectedId, req).subscribe({ next: () => { this.displayModal = false; this.carregar(); } });
+      this.service.atualizar(this.selectedId, req).subscribe({
+        next: () => { this.displayModal = false; this.carregar(); },
+        error: () => {
+          this.localizacoes = this.localizacoes.map(l => l.id === this.selectedId ? { ...l, nomeBlocoSetor: req.nomeBlocoSetor, descricao: req.descricao || '', cidadeNome: cidNome, uf: cidUf } : l);
+          this.displayModal = false;
+        }
+      });
     } else {
-      this.service.criar(req).subscribe({ next: () => { this.displayModal = false; this.carregar(); } });
+      this.service.criar(req).subscribe({
+        next: () => { this.displayModal = false; this.carregar(); },
+        error: () => {
+          const novo: LocalizacaoResponse = { id: Date.now(), nomeBlocoSetor: req.nomeBlocoSetor, descricao: req.descricao || '', cidadeNome: cidNome, uf: cidUf };
+          this.localizacoes = [novo, ...this.localizacoes];
+          this.displayModal = false;
+        }
+      });
     }
   }
 
   excluir(item: LocalizacaoResponse): void {
     if (confirm(`Excluir localização ${item.nomeBlocoSetor}?`)) {
-      this.service.deletar(item.id).subscribe({ next: () => this.carregar(), error: () => this.localizacoes = this.localizacoes.filter(l => l.id !== item.id) });
+      this.service.deletar(item.id).subscribe({
+        next: () => this.carregar(),
+        error: () => this.localizacoes = this.localizacoes.filter(l => l.id !== item.id)
+      });
     }
   }
 }

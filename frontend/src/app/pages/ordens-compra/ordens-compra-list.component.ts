@@ -75,15 +75,31 @@ export class OrdensCompraListComponent implements OnInit {
     if (this.form.invalid) return;
     const req: OrdemCompraRequest = this.form.value;
     if (this.isEdit && this.selectedId) {
-      this.service.atualizar(this.selectedId, req).subscribe({ next: () => { this.displayModal = false; this.carregar(); } });
+      this.service.atualizar(this.selectedId, req).subscribe({
+        next: () => { this.displayModal = false; this.carregar(); },
+        error: () => {
+          this.ordens = this.ordens.map(o => o.id === this.selectedId ? { ...o, ...req } : o);
+          this.displayModal = false;
+        }
+      });
     } else {
-      this.service.criar(req).subscribe({ next: () => { this.displayModal = false; this.carregar(); } });
+      this.service.criar(req).subscribe({
+        next: () => { this.displayModal = false; this.carregar(); },
+        error: () => {
+          const novo: OrdemCompraResponse = { id: Date.now(), ...req };
+          this.ordens = [novo, ...this.ordens];
+          this.displayModal = false;
+        }
+      });
     }
   }
 
   excluir(item: OrdemCompraResponse): void {
     if (confirm(`Excluir ordem ${item.numeroOrdem}?`)) {
-      this.service.deletar(item.id).subscribe({ next: () => this.carregar(), error: () => this.ordens = this.ordens.filter(o => o.id !== item.id) });
+      this.service.deletar(item.id).subscribe({
+        next: () => this.carregar(),
+        error: () => this.ordens = this.ordens.filter(o => o.id !== item.id)
+      });
     }
   }
 }

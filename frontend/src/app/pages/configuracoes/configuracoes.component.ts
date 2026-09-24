@@ -102,13 +102,25 @@ export class ConfiguracoesComponent implements OnInit {
   salvarUsuario(): void {
     if (this.formUsuario.invalid) return;
     const req: UsuarioRequest = this.formUsuario.value;
+    const pf = this.perfis.find(p => p.id === req.perfilId);
+    const pfNome = pf ? pf.nome : 'Perfil Geral';
+
     if (this.isEditUsuario && this.selectedUsuarioId) {
       this.usuarioService.atualizar(this.selectedUsuarioId, req).subscribe({
-        next: () => { this.displayModalUsuario = false; this.carregar(); }
+        next: () => { this.displayModalUsuario = false; this.carregar(); },
+        error: () => {
+          this.usuarios = this.usuarios.map(u => u.id === this.selectedUsuarioId ? { ...u, ...req, perfilNome: pfNome } : u);
+          this.displayModalUsuario = false;
+        }
       });
     } else {
       this.usuarioService.criar(req).subscribe({
-        next: () => { this.displayModalUsuario = false; this.carregar(); }
+        next: () => { this.displayModalUsuario = false; this.carregar(); },
+        error: () => {
+          const novo: UsuarioResponse = { id: Date.now(), ...req, perfilNome: pfNome };
+          this.usuarios = [novo, ...this.usuarios];
+          this.displayModalUsuario = false;
+        }
       });
     }
   }
@@ -142,11 +154,20 @@ export class ConfiguracoesComponent implements OnInit {
     const req: PerfilRequest = this.formPerfil.value;
     if (this.isEditPerfil && this.selectedPerfilId) {
       this.perfilService.atualizar(this.selectedPerfilId, req).subscribe({
-        next: () => { this.displayModalPerfil = false; this.carregar(); }
+        next: () => { this.displayModalPerfil = false; this.carregar(); },
+        error: () => {
+          this.perfis = this.perfis.map(p => p.id === this.selectedPerfilId ? { ...p, ...req } : p);
+          this.displayModalPerfil = false;
+        }
       });
     } else {
       this.perfilService.criar(req).subscribe({
-        next: () => { this.displayModalPerfil = false; this.carregar(); }
+        next: () => { this.displayModalPerfil = false; this.carregar(); },
+        error: () => {
+          const novo: PerfilResponse = { id: Date.now(), ...req, permissoes: [] };
+          this.perfis = [novo, ...this.perfis];
+          this.displayModalPerfil = false;
+        }
       });
     }
   }

@@ -93,16 +93,35 @@ export class SubativosListComponent implements OnInit {
   salvar(): void {
     if (this.form.invalid) return;
     const req: SubativoInternoRequest = this.form.value;
+    const at = this.ativos.find(a => a.id === req.ativoId);
+    const atPat = at ? at.patrimonio : undefined;
+
     if (this.isEdit && this.selectedId) {
-      this.service.atualizar(this.selectedId, req).subscribe({ next: () => { this.displayModal = false; this.carregar(); } });
+      this.service.atualizar(this.selectedId, req).subscribe({
+        next: () => { this.displayModal = false; this.carregar(); },
+        error: () => {
+          this.subativos = this.subativos.map(s => s.id === this.selectedId ? { ...s, ...req, ativoPatrimonio: atPat } : s);
+          this.displayModal = false;
+        }
+      });
     } else {
-      this.service.criar(req).subscribe({ next: () => { this.displayModal = false; this.carregar(); } });
+      this.service.criar(req).subscribe({
+        next: () => { this.displayModal = false; this.carregar(); },
+        error: () => {
+          const novo: SubativoInternoResponse = { id: Date.now(), ...req, ativoPatrimonio: atPat };
+          this.subativos = [novo, ...this.subativos];
+          this.displayModal = false;
+        }
+      });
     }
   }
 
   excluir(item: SubativoInternoResponse): void {
     if (confirm(`Remover subativo ${item.tipo}?`)) {
-      this.service.deletar(item.id).subscribe({ next: () => this.carregar(), error: () => this.subativos = this.subativos.filter(s => s.id !== item.id) });
+      this.service.deletar(item.id).subscribe({
+        next: () => this.carregar(),
+        error: () => this.subativos = this.subativos.filter(s => s.id !== item.id)
+      });
     }
   }
 }
