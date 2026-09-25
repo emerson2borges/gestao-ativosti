@@ -1,0 +1,30 @@
+<aside class="app-sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">
+      <i class="pi pi-desktop"></i>
+    </div>
+    <div class="brand-text">
+      <span class="title">Gestão TI</span>
+      <span class="subtitle">Ativos & Infra</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-menu">
+    <div *ngFor="let section of menuSections" class="menu-section">
+      <div class="section-title">{{ section.title }}</div>
+      <ul>
+        <li *ngFor="let item of section.items">
+          <a [routerLink]="item.routerLink" routerLinkActive="active" class="menu-item">
+            <i [class]="item.icon" class="item-icon"></i>
+            <span class="item-label">{{ item.label }}</span>
+            <span *ngIf="item.badge" class="item-badge">{{ item.badge }}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="version-tag">v1.0.0 • Gestão Ativos TI</div>
+  </div>
+</aside>

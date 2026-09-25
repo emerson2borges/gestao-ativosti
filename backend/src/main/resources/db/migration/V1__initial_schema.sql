@@ -51,7 +51,7 @@ CREATE TABLE ATIVOS (
 -- 6. Subativos Internos
 CREATE TABLE SUBATIVOS_INTERNO (
     id BIGSERIAL PRIMARY KEY,
-    ativo_id BIGINT NOT NULL,
+    ativo_id BIGINT NULL,
     tipo_componente VARCHAR(50) NOT NULL,
     especificacao VARCHAR(150) NOT NULL,
     quantidade INT NOT NULL DEFAULT 1,

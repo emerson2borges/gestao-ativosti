@@ -1,0 +1,45 @@
+<p-toast></p-toast>
+<app-page-header title="Tipos de Ativo" subtitle="Categorização dos equipamentos de tecnologia">
+  <button pButton label="Novo Tipo" icon="pi pi-plus" class="p-button-indigo" (click)="abrirModalNovo()"></button>
+</app-page-header>
+
+<div class="card-panel">
+  <p-table [value]="tipos" [paginator]="true" [rows]="10" styleClass="p-datatable-striped">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>ID</th>
+        <th>Nome do Tipo</th>
+        <th>Descrição</th>
+        <th class="text-center">Ações</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-tipo>
+      <tr>
+        <td>#{{ tipo.id }}</td>
+        <td><strong>{{ tipo.nome }}</strong></td>
+        <td>{{ tipo.descricao || '-' }}</td>
+        <td class="text-center actions-cell">
+          <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-sm" (click)="abrirModalEditar(tipo)"></button>
+          <button pButton icon="pi pi-trash" class="p-button-rounded p-button-text p-button-danger p-button-sm" (click)="excluir(tipo)"></button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog [(visible)]="displayModal" [header]="isEdit ? 'Editar Tipo' : 'Novo Tipo de Ativo'" [modal]="true" [style]="{ width: '450px' }">
+  <form [formGroup]="form" (ngSubmit)="salvar()">
+    <div class="form-field">
+      <label>Nome do Tipo *</label>
+      <input pInputText formControlName="nome" placeholder="Ex: Notebook, Servidor, Impressora" />
+    </div>
+    <div class="form-field mt-3">
+      <label>Descrição</label>
+      <input pInputText formControlName="descricao" placeholder="Detalhes opcionais" />
+    </div>
+    <div class="dialog-footer">
+      <button pButton type="button" label="Cancelar" class="p-button-text" (click)="displayModal = false"></button>
+      <button pButton type="submit" [label]="isEdit ? 'Salvar' : 'Cadastrar'" [disabled]="form.invalid"></button>
+    </div>
+  </form>
+</p-dialog>

@@ -42,3 +42,8 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Projects
+backend/target/
+frontend/.angular/
+frontend/dist/

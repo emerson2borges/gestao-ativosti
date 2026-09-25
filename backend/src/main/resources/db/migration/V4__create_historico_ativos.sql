@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS HISTORICO_ATIVOS (
+    id BIGSERIAL PRIMARY KEY,
+    ativo_id BIGINT NOT NULL,
+    campo_alterado VARCHAR(50) NOT NULL,
+    valor_antigo VARCHAR(150) NULL,
+    valor_novo VARCHAR(150) NULL,
+    chamado_glpi VARCHAR(20) NULL,
+    data_alteracao TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    usuario_id BIGINT NOT NULL,
+    CONSTRAINT fk_historico_ativo_ativo FOREIGN KEY (ativo_id) REFERENCES ATIVOS(id) ON DELETE CASCADE
+);

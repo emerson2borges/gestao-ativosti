@@ -1,0 +1,75 @@
+<app-page-header title="Histórico e Logs de Auditoria" subtitle="Trilha de movimentações, manutenções e alterações de ativos e suprimentos">
+</app-page-header>
+
+<div class="card-panel">
+  <!-- Navegação por Abas -->
+  <div class="tabs-header">
+    <button class="tab-btn" [class.active]="activeTab === 'ativos'" (click)="activeTab = 'ativos'">
+      <i class="pi pi-desktop"></i> Histórico de Ativos
+    </button>
+    <button class="tab-btn" [class.active]="activeTab === 'insumos'" (click)="activeTab = 'insumos'">
+      <i class="pi pi-box"></i> Movimentação de Insumos
+    </button>
+  </div>
+
+  <!-- Aba 1: Ativos -->
+  <div *ngIf="activeTab === 'ativos'" class="tab-content">
+    <p-table [value]="historicoAtivos" [paginator]="true" [rows]="10" styleClass="p-datatable-striped">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Data / Hora</th>
+          <th>Patrimônio</th>
+          <th>Tipo de Evento</th>
+          <th>Descrição do Evento</th>
+          <th>Chamado GLPI</th>
+          <th>Usuário Responsável</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td>{{ item.dataHora | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td><strong>{{ item.ativoPatrimonio || ('Ativo #' + item.ativoId) }}</strong></td>
+          <td>
+            <span class="badge-evento">{{ item.tipoEvento }}</span>
+          </td>
+          <td>{{ item.descricao }}</td>
+          <td>
+            <code *ngIf="item.chamadoGlpi">{{ item.chamadoGlpi }}</code>
+            <span *ngIf="!item.chamadoGlpi" class="text-muted">-</span>
+          </td>
+          <td>{{ item.usuarioResponsavel || 'Sistema' }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Aba 2: Insumos -->
+  <div *ngIf="activeTab === 'insumos'" class="tab-content">
+    <p-table [value]="historicoInsumos" [paginator]="true" [rows]="10" styleClass="p-datatable-striped">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>Data / Hora</th>
+          <th>Insumo</th>
+          <th>Tipo Movimentação</th>
+          <th>Qtd. Alterada</th>
+          <th>Motivo</th>
+          <th>Chamado GLPI</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-item>
+        <tr>
+          <td>{{ item.dataHora | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td><strong>{{ item.insumoNome || ('Insumo #' + item.insumoId) }}</strong></td>
+          <td>
+            <span [class.badge-entrada]="item.tipoMovimentacao === 'ENTRADA'" [class.badge-saida]="item.tipoMovimentacao === 'SAIDA'">
+              {{ item.tipoMovimentacao }}
+            </span>
+          </td>
+          <td><strong>{{ item.quantidadeAlterada }}</strong></td>
+          <td>{{ item.motivo || '-' }}</td>
+          <td><code>{{ item.chamadoGlpi || '-' }}</code></td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

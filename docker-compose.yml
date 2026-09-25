@@ -1,7 +1,9 @@
 services:
+
   postgres:
+
     image: postgres:17-alpine
-    container_name: ativosti_db
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -11,62 +13,54 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d ativosti"]
-      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
       timeout: 5s
       retries: 5
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin_dashboard
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    ports:
-      - "8081:80"
+  dev:
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - .:/workspace:cached
+      - maven_repository:/home/vscode/.m2
+    command: sleep infinity
     depends_on:
-      - postgres
+      backend:
+        condition: service_healthy
 
   backend:
-    build: ./backend
-    container_name: ativosti_backend
+
+    build:
+      context: ./backend
+    restart: unless-stopped
+    env_file:
+      - .env
     ports:
       - "8080:8080"
-    volumes:
-      - ./backend:/app
-    environment:
-      - SPRING_APPLICATION_NAME=${SPRING_APPLICATION_NAME}
-      - SERVER_PORT=${SERVER_PORT}
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
-      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
-      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=${SPRING_DATASOURCE_DRIVER_CLASS_NAME}
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=${SPRING_JPA_HIBERNATE_DDL_AUTO}
-      - SPRING_JPA_SHOW_SQL=${SPRING_JPA_SHOW_SQL}
-      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=${SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT}
-      - SPRING_FLYWAY_ENABLED=${SPRING_FLYWAY_ENABLED}
-      - SPRING_FLYWAY_BASELINE_ON_MIGRATE=${SPRING_FLYWAY_BASELINE_ON_MIGRATE}
-      - SPRING_FLYWAY_LOCATIONS=${SPRING_FLYWAY_LOCATIONS}
     depends_on:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
-      interval: 30s
-      timeout: 10s
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
       retries: 5
 
   frontend:
-    build: ./frontend
-    container_name: ativosti_frontend
+
+    build:
+      context: ./frontend
+    restart: unless-stopped
     ports:
       - "4200:4200"
     volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - ./frontend:/workspace/frontend
     depends_on:
       backend:
         condition: service_healthy
 
 volumes:
   postgres_data:
+  maven_repository:
